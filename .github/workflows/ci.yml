@@ -1,4 +1,4 @@
-name: DevOps CI/CD Pipeline with ATM Transaction Simulation
+name: ATM Transaction Workflow
 
 on:
   push:
@@ -7,12 +7,11 @@ on:
     branches: [main]
 
 jobs:
-  transaction:
+  test:
     runs-on: ubuntu-latest
     env:
-      NEW_BALANCE: 45000
+      NEW_BALANCE: 462000
       TRANSACTION_AMOUNT: 23000
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -27,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Simulate ATM Transaction Process
+      - name: Simulate ATM transaction steps
         run: |
           echo "💳 Card entered: XXXX-XXXX-XXXX-1234"
           sleep 2
@@ -50,24 +49,17 @@ jobs:
           echo "Bank: IDHAR BANK"
           echo "--------------------------------------"
 
-      - name: Send SMS notification
+      - name: Send notifications if transaction successful
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
           TO_PHONE_NUMBER: ${{ secrets.TO_PHONE_NUMBER }}
-        run: |
-          echo "📲 Sending SMS notification..."
-          python modules/sms_notification.py --amount ${{ env.TRANSACTION_AMOUNT }} --balance ${{ env.NEW_BALANCE }}
-
-      - name: Send Slack notification
-        env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          echo "💬 Sending Slack notification..."
-          python modules/slack_notify.py --amount ${{ env.TRANSACTION_AMOUNT }} --balance ${{ env.NEW_BALANCE }}
+          python modules/notify.py --amount ${{ env.TRANSACTION_AMOUNT }} --balance ${{ env.NEW_BALANCE }}
 
       - name: Print failure message if tests fail
         if: failure()
-        run: echo "❌ Some steps failed! Please check."
+        run: echo "❌ Some tests failed! Please check."
 
