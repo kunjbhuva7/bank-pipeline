@@ -1,6 +1,5 @@
 # Twilio SMS integration example
 # You must install twilio: pip install twilio
-# Setup environment variables TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, TO_PHONE_NUMBER
 
 import os
 
