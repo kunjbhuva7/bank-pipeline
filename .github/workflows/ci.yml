@@ -47,7 +47,6 @@ jobs:
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
           TO_PHONE_NUMBER: ${{ secrets.TO_PHONE_NUMBER }}
-          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           python modules/notify.py --amount ${{ env.TRANSACTION_AMOUNT }} --balance ${{ env.NEW_BALANCE }}
