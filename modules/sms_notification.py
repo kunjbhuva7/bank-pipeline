@@ -10,7 +10,7 @@ if __name__ == "__main__":
         amount = int(sys.argv[1])
         balance = int(sys.argv[2])
     else:
-        amount = 67000
-        balance = 321000
+        amount = 1000
+        balance = 5000
     send_sms(amount, balance)
 
