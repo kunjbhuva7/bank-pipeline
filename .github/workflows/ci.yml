@@ -1,15 +1,9 @@
-name: DevOps CI/CD Pipeline with ATM Transaction Simulation
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
 jobs:
-  transaction:
+  test:
     runs-on: ubuntu-latest
-
+    env:
+      NEW_BALANCE: 462000  # example after debit
+      TRANSACTION_AMOUNT: 23000
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,13 +18,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Simulate ATM Transaction Process
+      - name: Simulate ATM transaction steps
         run: |
           echo "💳 Card entered: XXXX-XXXX-XXXX-1234"
           sleep 2
           echo "🌐 Language selected: English"
           sleep 1
-          echo "💵 Withdrawal amount entered: ₹23000"
+          echo "💵 Withdrawal amount entered: ₹${{ env.TRANSACTION_AMOUNT }}"
           sleep 1
           echo "🔐 PIN entered: ****"
           sleep 2
@@ -40,24 +34,25 @@ jobs:
           echo "🧾 Printing transaction report..."
           echo "--------------------------------------"
           echo "Account: XXXXXX5435878"
-          echo "Transaction: Debit ₹23000"
+          echo "Transaction: Debit ₹${{ env.TRANSACTION_AMOUNT }}"
           echo "Date: $(date +'%d/%m/%y %H:%M')"
           echo "New Balance: ₹${{ env.NEW_BALANCE }}"
           echo "For dispute call: 34254325245"
           echo "Bank: IDHAR BANK"
           echo "--------------------------------------"
 
-      - name: Send SMS notification
+      - name: Send notifications if transaction successful
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
           TO_PHONE_NUMBER: ${{ secrets.TO_PHONE_NUMBER }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          echo "🚀 Sending SMS notification..."
-          python modules/sms_notification.py --amount 23000 --balance 45000
+          python modules/notify.py --amount ${{ env.TRANSACTION_AMOUNT }} --balance ${{ env.NEW_BALANCE }}
 
       - name: Print failure message if tests fail
         if: failure()
-        run: echo "❌ Some steps failed! Please check."
+        run: echo "❌ Some tests failed! Please check."
 
