@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-def send_sms(amount=1000, balance=5000):
+def send_sms(amount=11350, balance=45000):
     try:
         from twilio.rest import Client
 
@@ -15,9 +15,9 @@ def send_sms(amount=1000, balance=5000):
             return
 
         # Customize details
-        account_number = "XXXXXX5435878"
-        bank_name = "Idhar Bank"
-        helpline = "34254325245"
+        account_number = "XXXXXX870432"
+        bank_name = "Team IDFC FIRST Bank"
+        helpline = "180010888"
         date_str = datetime.now().strftime("%d/%m/%y %H:%M")
 
         message_body = (
