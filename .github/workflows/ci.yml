@@ -36,7 +36,7 @@ jobs:
         TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
         TO_PHONE_NUMBER: ${{ secrets.TO_PHONE_NUMBER }}
       run: |
-        python sms_notification.py
+        python modules/sms_notification.py
 
     - name: Print failure message if tests fail
       if: failure()
