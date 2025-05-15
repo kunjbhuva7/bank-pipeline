@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 def send_sms(amount=1000, balance=5000):
     try:
@@ -13,9 +14,19 @@ def send_sms(amount=1000, balance=5000):
             print("⚠️ SMS credentials not set. Skipping SMS sending.")
             return
 
-        client = Client(account_sid, auth_token)
-        message_body = f"📲 Your account has been debited by ₹{amount}. Available balance: ₹{balance}. Thank you for banking with us."
+        # Customize details
+        account_number = "XXXXXX5435878"
+        bank_name = "Idhar Bank"
+        helpline = "34254325245"
+        date_str = datetime.now().strftime("%d/%m/%y %H:%M")
 
+        message_body = (
+            f"Dear Customer, your A/C {account_number} is debited by INR {amount:.2f} "
+            f"on {date_str}. New Bal: INR {balance:,.2f}. "
+            f"For dispute, call {helpline}. - {bank_name}"
+        )
+
+        client = Client(account_sid, auth_token)
         message = client.messages.create(
             body=message_body,
             from_=from_number,
@@ -23,6 +34,8 @@ def send_sms(amount=1000, balance=5000):
         )
 
         print(f"✅ SMS sent successfully. SID: {message.sid}")
+        print(f"📩 Message: {message_body}")
+
     except ImportError:
         print("❌ Twilio module not installed. Please run 'pip install twilio' to enable SMS notifications.")
     except Exception as e:
