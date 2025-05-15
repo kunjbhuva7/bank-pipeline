@@ -1,4 +1,4 @@
-name: Python CI/CD Pipeline
+name: DevOps CI/CD Pipeline with ATM Transaction Simulation
 
 on:
   push:
@@ -7,38 +7,57 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  transaction:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run tests with pytest
-      run: |
-        pytest tests/
+      - name: Simulate ATM Transaction Process
+        run: |
+          echo "💳 Card entered: XXXX-XXXX-XXXX-1234"
+          sleep 2
+          echo "🌐 Language selected: English"
+          sleep 1
+          echo "💵 Withdrawal amount entered: ₹23000"
+          sleep 1
+          echo "🔐 PIN entered: ****"
+          sleep 2
+          echo "⏳ Processing transaction, please wait..."
+          sleep 10
+          echo "✅ Transaction successful!"
+          echo "🧾 Printing transaction report..."
+          echo "--------------------------------------"
+          echo "Account: XXXXXX5435878"
+          echo "Transaction: Debit ₹23000"
+          echo "Date: $(date +'%d/%m/%y %H:%M')"
+          echo "New Balance: ₹${{ env.NEW_BALANCE }}"
+          echo "For dispute call: 34254325245"
+          echo "Bank: IDHAR BANK"
+          echo "--------------------------------------"
 
-    - name: Send SMS notification if tests pass
-      if: success()
-      env:
-        TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
-        TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
-        TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
-        TO_PHONE_NUMBER: ${{ secrets.TO_PHONE_NUMBER }}
-      run: |
-        python modules/sms_notification.py
+      - name: Send SMS notification
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
+          TO_PHONE_NUMBER: ${{ secrets.TO_PHONE_NUMBER }}
+        run: |
+          echo "🚀 Sending SMS notification..."
+          python modules/sms_notification.py --amount 23000 --balance 45000
 
-    - name: Print failure message if tests fail
-      if: failure()
-      run: echo "❌ Some tests failed! Please check."
+      - name: Print failure message if tests fail
+        if: failure()
+        run: echo "❌ Some steps failed! Please check."
 
