@@ -57,7 +57,7 @@ jobs:
           TO_PHONE_NUMBER: ${{ secrets.TO_PHONE_NUMBER }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          python modules/notify.py --amount ${{ env.TRANSACTION_AMOUNT }} --balance ${{ env.NEW_BALANCE }}
+          python modules/sms_notification.py --amount ${{ env.TRANSACTION_AMOUNT }} --balance ${{ env.NEW_BALANCE }}
 
       - name: Print failure message if tests fail
         if: failure()
